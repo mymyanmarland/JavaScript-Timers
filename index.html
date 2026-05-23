@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript setInterval & clearInterval (Myanmar)</title>
+    
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/theme/night.css" id="theme">
+    
+    <!-- Highlight.js for Code Syntax -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/plugin/highlight/monokai.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts (Padauk for Myanmar Text) -->
+    <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* Custom CSS for Presentation */
+        :root {
+            --primary-color: #f7df1e; /* JS Yellow */
+            --text-color: #ffffff;
+            --bg-gradient: linear-gradient(135deg, #141E30 0%, #243B55 100%);
+        }
+
+        body {
+            background: var(--bg-gradient);
+            font-family: 'Padauk', sans-serif;
+        }
+
+        .reveal {
+            font-family: 'Padauk', sans-serif;
+            font-size: 42px; /* Made slightly larger for readability */
+        }
+
+        .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+            font-family: 'Padauk', sans-serif;
+            font-weight: 700;
+            text-transform: none;
+            color: var(--primary-color);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            line-height: 1.4;
+        }
+
+        .reveal h1 { font-size: 2.2em; }
+        .reveal h2 { font-size: 1.6em; }
+        .reveal h3 { font-size: 1.3em; }
+
+        .reveal p, .reveal li {
+            line-height: 1.8;
+            color: #e0e0e0;
+        }
+
+        .reveal code {
+            font-family: 'Fira Code', monospace;
+            background: #23241f;
+            color: #f8f8f2;
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-size: 0.85em;
+        }
+
+        .reveal pre {
+            width: 100%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            border-radius: 10px;
+        }
+
+        .reveal pre code {
+            padding: 20px;
+            font-size: 1.1em;
+            line-height: 1.5;
+            border-radius: 10px;
+        }
+
+        .highlight-text {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .icon-large {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid var(--primary-color);
+            margin: 20px 0;
+        }
+
+        /* Adjust slide layout to ensure it fits screen well */
+        .reveal .slides section {
+            padding: 20px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- Slide 1: Title -->
+            <section data-transition="zoom">
+                <i class="fab fa-js-square icon-large" style="font-size: 4em;"></i>
+                <h1>JavaScript Timers</h1>
+                <h3><code>setInterval</code> & <code>clearInterval</code></h3>
+                <p>မြန်မာလို ပြည့်ပြည့်စုံစုံ လေ့လာကြမည်</p>
+                <br>
+                <small>Web-based Presentation Design</small>
+            </section>
+
+            <!-- Slide 2: Introduction -->
+            <section data-transition="slide">
+                <h2><i class="fas fa-hand-sparkles"></i> မိတ်ဆက် (Introduction)</h2>
+                <p class="fragment fade-up">JavaScript ရေးတဲ့အခါ အချို့သော လုပ်ငန်းစဉ်တွေကို <strong>အချိန်တစ်ခု သတ်မှတ်ပြီး</strong> အလုပ်လုပ်ခိုင်းချင်တဲ့ အခါမျိုးတွေ ရှိပါတယ်။</p>
+                <p class="fragment fade-up">ဥပမာ - နာရီပြတာ၊ ပုံတွေ အလိုအလျောက်ပြောင်းတာ စသည်တို့ ဖြစ်ပါတယ်။</p>
+            </section>
+
+            <!-- Slide 3: Single-threaded Nature -->
+            <section>
+                <h2>JavaScript သည် Single-threaded ဖြစ်သည်</h2>
+                <div class="box">
+                    <p>ဆိုလိုသည်မှာ JavaScript သည် တစ်ကြိမ်လျှင် အလုပ် (Task) တစ်ခုကိုသာ လုပ်ဆောင်နိုင်ပါသည်။</p>
+                </div>
+                <p class="fragment fade-right">ဒါဆိုရင် အချိန်စောင့်ရမယ့် အလုပ်တွေကို ဘယ်လိုလုပ်မလဲ?</p>
+            </section>
+
+            <!-- Slide 4: Web APIs -->
+            <section>
+                <h2><i class="fas fa-cogs"></i> Web APIs များ</h2>
+                <p>Browser တွေမှာ JavaScript အပြင် အခြားသော ကူညီပေးမယ့် Web APIs တွေ ပါဝင်ပါတယ်။</p>
+                <p class="fragment highlight-text">အချိန်နဲ့ သက်ဆိုင်တဲ့ လုပ်ဆောင်ချက် (Timers) တွေကို Web APIs က တာဝန်ယူပေးပါတယ်။</p>
+            </section>
+
+            <!-- Slide 5: The Two Main Functions -->
+            <section data-transition="convex">
+                <h2>အဓိက Function (၂) ခု</h2>
+                <ul>
+                    <li class="fragment"><code>setTimeout()</code> : အချိန်တစ်ခု စောင့်ပြီးမှ <span class="highlight-text">တစ်ကြိမ်သာ</span> အလုပ်လုပ်သည်။</li>
+                    <li class="fragment"><code>setInterval()</code> : သတ်မှတ်ထားသော အချိန်တိုင်းမှာ <span class="highlight-text">ထပ်တလဲလဲ</span> အလုပ်လုပ်သည်။</li>
+                </ul>
+                <p class="fragment">ဒီနေ့ ကျွန်တော်တို့ <code>setInterval</code> ကို အဓိက လေ့လာသွားပါမယ်။</p>
+            </section>
+
+            <!-- Slide 6: What is setInterval? -->
+            <section>
+                <h2><i class="fas fa-redo"></i> <code>setInterval</code> ဆိုတာ ဘာလဲ?</h2>
+                <div class="box">
+                    <p>ကုဒ် (Code) အပိုင်းအစတစ်ခုကို မိမိသတ်မှတ်ထားသော အချိန်အပိုင်းအခြား (Time Interval) တစ်ခုတိုင်းမှာ အဆုံးမရှိ ထပ်တလဲလဲ အလုပ်လုပ်ခိုင်းစေသော Function ဖြစ်ပါတယ်။</p>
+                </div>
+            </section>
+
+            <!-- Slide 7: Syntax -->
+            <section data-transition="fade">
+                <h2><code>setInterval</code> ၏ Syntax</h2>
+                <pre><code class="language-javascript" data-trim data-line-numbers>
+setInterval(function, delay, arg1, arg2, ...)
+                </code></pre>
+                <p class="fragment">Parameters သုံးခု ပါဝင်ပါတယ်။ တစ်ခုချင်းစီကို ကြည့်ရအောင်။</p>
+            </section>
+
+            <!-- Slide 8: Parameter 1 -->
+            <section>
+                <h2>Parameter (၁): <code>function</code></h2>
+                <p>ထပ်တလဲလဲ အလုပ်လုပ်စေချင်တဲ့ <strong>Callback Function</strong> ဖြစ်ပါတယ်။</p>
+                <pre><code class="language-javascript" data-trim>
+setInterval(() => {
+    // လုပ်ဆောင်မည့် အရာများ
+}, 1000);
+                </code></pre>
+            </section>
+
+            <!-- Slide 9: Parameter 2 -->
+            <section>
+                <h2>Parameter (၂): <code>delay</code></h2>
+                <p>ဘယ်လောက်ကြာတိုင်း တစ်ခါ အလုပ်လုပ်မလဲ ဆိုတဲ့ <strong>အချိန် (Milliseconds)</strong> ဖြစ်ပါတယ်။</p>
+                <ul class="fragment fade-up">
+                    <li>1 Second = 1000 Milliseconds</li>
+                    <li>2 Seconds = 2000 Milliseconds</li>
+                </ul>
+            </section>
+
+            <!-- Slide 10: Parameter 3 -->
+            <section>
+                <h2>Parameter (၃): <code>arguments</code></h2>
+                <p>ဒါကတော့ Option (မထည့်လည်း ရပါတယ်)။ Function ဆီကို Data တွေ လှမ်းပို့ချင်ရင် သုံးပါတယ်။</p>
+                <pre><code class="language-javascript" data-trim>
+function greet(name) {
+    console.log("Hello " + name);
+}
+setInterval(greet, 1000, "Aung Aung");
+                </code></pre>
+            </section>
+
+            <!-- Slide 11: Example 1 -->
+            <section>
+                <h2><i class="fas fa-code"></i> ဥပမာ (၁): ရိုးရှင်းသော စာထုတ်ခြင်း</h2>
+                <pre><code class="language-javascript" data-trim data-line-numbers="1-3">
+setInterval(function() {
+    console.log("မြန်မာစာ လေ့လာကြစို့");
+}, 2000);
+                </code></pre>
+                <p class="fragment fade-in">အထက်ပါ Code သည် <strong>၂ စက္ကန့်ပြည့်တိုင်း</strong> စာကြောင်းကို Console ထဲတွင် ပြသနေမည်ဖြစ်သည်။</p>
+            </section>
+
+            <!-- Slide 12: Visualizing Example 1 -->
+            <section>
+                <h2>လုပ်ဆောင်ပုံ အဆင့်ဆင့်</h2>
+                <ul>
+                    <li class="fragment">0s: Code စတင်အလုပ်လုပ်</li>
+                    <li class="fragment">2s: "မြန်မာစာ လေ့လာကြစို့" <span class="highlight-text">(ပထမအကြိမ်)</span></li>
+                    <li class="fragment">4s: "မြန်မာစာ လေ့လာကြစို့" <span class="highlight-text">(ဒုတိယအကြိမ်)</span></li>
+                    <li class="fragment">6s: "မြန်မာစာ လေ့လာကြစို့" <span class="highlight-text">(တတိယအကြိမ်)</span></li>
+                    <li class="fragment">... အဆုံးမရှိ ဆက်သွားနေပါမည်။</li>
+                </ul>
+            </section>
+
+            <!-- Slide 13: Example 2 -->
+            <section>
+                <h2><i class="fas fa-stopwatch"></i> ဥပမာ (၂): Counter (ရေတွက်ခြင်း)</h2>
+                <pre><code class="language-javascript" data-trim data-line-numbers="1,3-6">
+let count = 0;
+
+setInterval(() => {
+    count++;
+    console.log("Current Count: " + count);
+}, 1000); // ၁ စက္ကန့်လျှင် တစ်ကြိမ်
+                </code></pre>
+            </section>
+
+            <!-- Slide 14: Result of Example 2 -->
+            <section>
+                <h2>Counter ၏ ရလဒ်</h2>
+                <div class="box" style="font-family: monospace;">
+                    Current Count: 1<br>
+                    Current Count: 2<br>
+                    Current Count: 3<br>
+                    ...<br>
+                    Current Count: 1000 (And beyond)
+                </div>
+            </section>
+
+            <!-- Slide 15: The Problem -->
+            <section data-transition="slide-in fade-out">
+                <h2><i class="fas fa-exclamation-triangle" style="color: #ff4757;"></i> ပြဿနာတစ်ခု ပေါ်လာပါပြီ</h2>
+                <p><code>setInterval</code> သည် အလိုအလျောက် <strong>ဘယ်တော့မှ ရပ်တန့်သွားမည် မဟုတ်ပါ။</strong></p>
+                <p class="fragment fade-up">Browser ကို ပိတ်လိုက်မှ သို့မဟုတ် Tab ကို ပိတ်လိုက်မှသာ ရပ်သွားပါမည်။</p>
+            </section>
+
+            <!-- Slide 16: Why is it bad? -->
+            <section>
+                <h2>ဘာဖြစ်လို့ မကောင်းတာလဲ?</h2>
+                <ul>
+                    <li class="fragment"><strong>Memory Leak:</strong> ကွန်ပျူတာရဲ့ Memory တွေကို အလဟဿ စားသုံးနေပါမယ်။</li>
+                    <li class="fragment"><strong>Performance:</strong> ဖုန်း သို့မဟုတ် ကွန်ပျူတာကို လေးလံသွားစေပါတယ်။</li>
+                    <li class="fragment"><strong>Bugs:</strong> မလိုအပ်တော့တဲ့ အချိန်မှာ ဆက်အလုပ်လုပ်နေရင် Error တွေ တက်နိုင်ပါတယ်။</li>
+                </ul>
+            </section>
+
+            <!-- Slide 17: The Solution -->
+            <section>
+                <h2>အဖြေကတော့...</h2>
+                <h1 class="highlight-text"><code>clearInterval</code></h1>
+                <p>ရပ်တန့်ဖို့အတွက် ဒီ Function ကို သုံးရပါမယ်။</p>
+            </section>
+
+            <!-- Slide 18: What is clearInterval? -->
+            <section>
+                <h2><i class="fas fa-ban"></i> <code>clearInterval</code> ဆိုတာ ဘာလဲ?</h2>
+                <div class="box">
+                    <p>အလုပ်လုပ်နေဆဲဖြစ်သော <code>setInterval</code> ကို ချက်ချင်း ရပ်တန့်ပစ်လိုက်သော Function ဖြစ်ပါသည်။</p>
+                </div>
+            </section>
+
+            <!-- Slide 19: Syntax of clearInterval -->
+            <section>
+                <h2><code>clearInterval</code> ၏ Syntax</h2>
+                <pre><code class="language-javascript" data-trim>
+clearInterval(intervalID)
+                </code></pre>
+                <p class="fragment fade-up">ဒီနေရာမှာ မေးစရာရှိလာတာက... <strong class="highlight-text">intervalID</strong> ဆိုတာ ဘာလဲ?</p>
+            </section>
+
+            <!-- Slide 20: What is interval ID? -->
+            <section>
+                <h2>Interval ID ဆိုတာ ဘာလဲ?</h2>
+                <p><code>setInterval</code> ကို ခေါ်လိုက်တဲ့အခါ သူ့ကို မှတ်သားထားနိုင်ဖို့ <strong>သီးသန့် နံပါတ် (Unique ID)</strong> တစ်ခုကို ပြန်ပေး (Return) ပါတယ်။</p>
+                <p class="fragment highlight-text">ထို ID သည် ပုံမှန်အားဖြင့် ကိန်းပြည့် (Integer Number) ဖြစ်ပါတယ်။</p>
+            </section>
+
+            <!-- Slide 21: How to get the ID? -->
+            <section>
+                <h2>ID ကို ဘယ်လို သိမ်းမလဲ?</h2>
+                <p>Variable တစ်ခု တည်ဆောက်ပြီး သိမ်းထားရပါမယ်။</p>
+                <pre><code class="language-javascript" data-trim data-line-numbers="1">
+const myTimerID = setInterval(() => {
+    console.log("Working...");
+}, 1000);
+
+console.log(myTimerID); // e.g., 1 or 2
+                </code></pre>
+            </section>
+
+            <!-- Slide 22: Using the ID -->
+            <section>
+                <h2>ID ကို အသုံးပြု၍ ရပ်တန့်ခြင်း</h2>
+                <p>ထို သိမ်းထားသော <code>myTimerID</code> ကို <code>clearInterval</code> ထဲသို့ ထည့်ပေးလိုက်ရုံပါပဲ။</p>
+                <pre><code class="language-javascript" data-trim>
+clearInterval(myTimerID);
+                </code></pre>
+            </section>
+
+            <!-- Slide 23: Complete Example 3 -->
+            <section>
+                <h2><i class="fas fa-play"></i> အပြည့်အစုံ ဥပမာ (၃)</h2>
+                <p>၅ စက္ကန့်ပြည့်ရင် Counter ကို ရပ်တန့်ကြစို့။</p>
+                <pre><code class="language-javascript" data-trim data-line-numbers="1-2|4-10">
+let count = 0;
+let timerID; 
+
+timerID = setInterval(() => {
+    count++;
+    console.log(count);
+    if(count === 5) {
+        clearInterval(timerID); // ၅ ပြည့်ရင် ရပ်မည်
+    }
+}, 1000);
+                </code></pre>
+            </section>
+
+            <!-- Slide 24: Explanation of Example 3 -->
+            <section>
+                <h2>ဥပမာ (၃) ကို ခွဲခြမ်းစိတ်ဖြာခြင်း</h2>
+                <ol>
+                    <li class="fragment"><code>timerID</code> ထဲကို Interval အလုပ်လုပ်တဲ့ ID ထည့်သိမ်းတယ်။</li>
+                    <li class="fragment">၁ စက္ကန့်ပြည့်တိုင်း <code>count</code> ကို ၁ တိုးတယ်။</li>
+                    <li class="fragment"><code>count === 5</code> ဖြစ်သွားတဲ့အခါ...</li>
+                    <li class="fragment"><code>clearInterval(timerID)</code> ကို ခေါ်လိုက်တဲ့အတွက် ချက်ချင်း ရပ်သွားပါတယ်။</li>
+                </ol>
+            </section>
+
+            <!-- Slide 25: Button Click Example -->
+            <section>
+                <h2><i class="fas fa-mouse-pointer"></i> Button နှိပ်၍ ရပ်တန့်ခြင်း</h2>
+                <pre><code class="language-javascript" data-trim>
+let id = setInterval(() => {
+    console.log("Running...");
+}, 1000);
+
+document.getElementById("stopBtn")
+        .addEventListener("click", () => {
+            clearInterval(id);
+            console.log("Stopped!");
+});
+                </code></pre>
+            </section>
+
+            <!-- Slide 26: Real-World Use Cases -->
+            <section data-background-color="#2c3e50">
+                <h1 style="color: white;">လက်တွေ့ အသုံးချမှုများ</h1>
+                <h3>Real-World Use Cases</h3>
+            </section>
+
+            <!-- Slide 27: Use Case 1 -->
+            <section>
+                <h2>(၁) ဒစ်ဂျစ်တယ် နာရီ (Digital Clock)</h2>
+                <p>အချိန်ကို စက္ကန့်နဲ့အမျှ ပြောင်းလဲပြသဖို့ <code>setInterval</code> က အကောင်းဆုံးပါ။</p>
+            </section>
+
+            <!-- Slide 28: Code for Digital Clock -->
+            <section>
+                <h2>Digital Clock Code</h2>
+                <pre><code class="language-javascript" data-trim>
+setInterval(() => {
+    const date = new Date();
+    const timeString = date.toLocaleTimeString();
+    
+    // UI ပေါ်တွင် အချိန်ကို ပြသခြင်း
+    document.getElementById("clock").innerText = timeString;
+    
+}, 1000); // ၁ စက္ကန့်တိုင်း အသစ်ပြန်ပြမည်
+                </code></pre>
+            </section>
+
+            <!-- Slide 29: Use Case 2 -->
+            <section>
+                <h2>(၂) နောက်ပြန်ရေတွက်ခြင်း (Countdown Timer)</h2>
+                <p>New Year ရောက်ဖို့ ဘယ်လောက်လိုသေးလဲ? Sales Promotion အချိန် ဘယ်လောက်ကျန်သေးလဲ? စသည်တို့အတွက် သုံးနိုင်ပါတယ်။</p>
+            </section>
+
+            <!-- Slide 30: Code for Countdown -->
+            <section>
+                <h2>Countdown Code အကြမ်းဖျင်း</h2>
+                <pre><code class="language-javascript" data-trim>
+let timeLeft = 10;
+const countdown = setInterval(() => {
+    timeLeft--;
+    console.log(timeLeft + " seconds remaining");
+    
+    if (timeLeft <= 0) {
+        clearInterval(countdown);
+        console.log("Time's up!");
+    }
+}, 1000);
+                </code></pre>
+            </section>
+
+            <!-- Slide 31: Use Case 3 -->
+            <section>
+                <h2>(၃) ပုံများ အလိုအလျောက်ပြောင်းခြင်း (Image Carousel/Slider)</h2>
+                <p>Website တွေရဲ့ မျက်နှာဖုံးမှာ ပုံတွေ ၃ စက္ကန့် တစ်ခါ အလိုလို ပြောင်းသွားတာ တွေ့ဖူးမှာပါ။ ဒါလည်း <code>setInterval</code> ကို သုံးထားတာပါ။</p>
+            </section>
+
+            <!-- Slide 32: Code for Slider -->
+            <section>
+                <h2>Slider Code အကြမ်းဖျင်း</h2>
+                <pre><code class="language-javascript" data-trim>
+let currentImageIndex = 0;
+const images = ['img1.jpg', 'img2.jpg', 'img3.jpg'];
+
+setInterval(() => {
+    currentImageIndex++;
+    if(currentImageIndex >= images.length) {
+        currentImageIndex = 0; // အစက ပြန်စမည်
+    }
+    changeImage(images[currentImageIndex]);
+}, 3000); // ၃ စက္ကန့် တစ်ကြိမ် ပြောင်းမည်
+                </code></pre>
+            </section>
+
+            <!-- Slide 33: Use Case 4 -->
+            <section>
+                <h2>(၄) Data အသစ် လှမ်းယူခြင်း (API Polling)</h2>
+                <p>ဥပမာ - Facebook Message အသစ်ဝင်မဝင် ၅ စက္ကန့် တစ်ခါ Server ကို လှမ်းမေးတဲ့အခါမျိုးမှာ အသုံးပြုပါတယ်။</p>
+            </section>
+
+            <!-- Slide 34: Code for API Polling -->
+            <section>
+                <h2>API Polling Code</h2>
+                <pre><code class="language-javascript" data-trim>
+const pollInterval = setInterval(async () => {
+    try {
+        let response = await fetch('/api/messages');
+        let data = await response.json();
+        updateUI(data);
+    } catch(err) {
+        console.error(err);
+        clearInterval(pollInterval); // Error တက်ပါက ရပ်မည်
+    }
+}, 5000);
+                </code></pre>
+            </section>
+
+            <!-- Slide 35: Advanced Topics Transition -->
+            <section data-background-color="#8e44ad">
+                <h1 style="color: white;">အဆင့်မြင့် သိမှတ်ဖွယ်ရာများ</h1>
+                <h3>Advanced Topics & Best Practices</h3>
+            </section>
+
+            <!-- Slide 36: Common Pitfalls -->
+            <section>
+                <h2>သတိပြုရမည့် အချက်များ (Pitfalls)</h2>
+                <p><code>setInterval</code> ကို သုံးတဲ့အခါ အလွယ်တကူ မှားတတ်တဲ့ အချက် (၄) ချက် ရှိပါတယ်။</p>
+            </section>
+
+            <!-- Slide 37: Pitfall 1 - Memory Leaks -->
+            <section>
+                <h2>(၁) Memory Leaks <i class="fas fa-memory"></i></h2>
+                <p>Single Page Applications (ဥပမာ React, Vue) တွေမှာ Page ပြောင်းသွားပေမယ့် Interval တွေက နောက်ကွယ်မှာ ဆက်အလုပ်လုပ်နေတတ်ပါတယ်။</p>
+            </section>
+
+            <!-- Slide 38: Solution to Pitfall 1 -->
+            <section>
+                <h2>ရှင်းလင်းရန် အရေးကြီးသည်</h2>
+                <div class="box">
+                    Component မဖျက်ခင် သို့မဟုတ် Page မပြောင်းခင် <code>clearInterval</code> ကို မဖြစ်မနေ ခေါ်ပေးရပါမယ် (Cleanup function)။
+                </div>
+            </section>
+
+            <!-- Slide 39: Pitfall 2 - this keyword -->
+            <section>
+                <h2>(၂) <code>this</code> Keyword ပြဿနာ</h2>
+                <p>Object တွေထဲမှာ <code>setInterval</code> သုံးတဲ့အခါ <code>this</code> ရဲ့ တန်ဖိုးက Window Object ကို ရည်ညွှန်းသွားတတ်ပါတယ်။</p>
+            </section>
+
+            <!-- Slide 40: Arrow Functions to the rescue -->
+            <section>
+                <h2>Arrow Function အသုံးပြုခြင်း</h2>
+                <p>ဒီပြဿနာကို ဖြေရှင်းဖို့ ES6 ရဲ့ <strong class="highlight-text">Arrow Function (=>)</strong> ကို အသုံးပြုသင့်ပါတယ်။ Arrow Function က <code>this</code> ကို မှန်ကန်စွာ ထိန်းသိမ်းပေးပါတယ်။</p>
+            </section>
+
+            <!-- Slide 41: Pitfall 3 - Inaccuracy -->
+            <section>
+                <h2>(၃) အချိန်တိကျမှု မရှိခြင်း (Inaccuracy)</h2>
+                <p class="fragment fade-up">JavaScript <code>setInterval(..., 1000)</code> လို့ ရေးတိုင်း တိတိကျကျ ၁ စက္ကန့်တိုင်း အလုပ်လုပ်မယ်လို့ <span style="color: red;">အာမခံချက် မရှိပါဘူး။</span></p>
+            </section>
+
+            <!-- Slide 42: The Event Loop -->
+            <section>
+                <h2>ဘာကြောင့်လဲ? (Event Loop)</h2>
+                <p>JavaScript ဟာ Thread တစ်ခုတည်းရှိလို့၊ တခြားလေးလံတဲ့ အလုပ်တွေ (Heavy Tasks) ရှိနေရင် Timer က အချိန်စေ့သွားတောင် ချက်ချင်း အလုပ်မလုပ်နိုင်ဘဲ <strong>စောင့်နေရပါတယ်။</strong></p>
+            </section>
+
+            <!-- Slide 43: Visualizing Delay -->
+            <section>
+                <h2>Call Stack ပိတ်ဆို့ခြင်း</h2>
+                <div class="box">
+                    <p>Expected: 1s -> 2s -> 3s</p>
+                    <p>Reality: 1s -> 2.2s -> 3.5s (တခြားအလုပ်တွေကြောင့် နောက်ကျခြင်း)</p>
+                </div>
+            </section>
+
+            <!-- Slide 44: Pitfall 4 - Overlapping -->
+            <section>
+                <h2>(၄) အလုပ်တွေ ထပ်သွားခြင်း (Overlapping)</h2>
+                <p>သင်ခိုင်းလိုက်တဲ့ Function လုပ်ဆောင်ဖို့ ကြာချိန်က <strong>Delay အချိန်ထက် ပိုကြာနေရင်</strong>၊ ပထမတစ်ခု မပြီးခင် နောက်တစ်ခု ထပ်ရောက်လာပြီး ပြဿနာတက်နိုင်ပါတယ်။</p>
+            </section>
+
+            <!-- Slide 45: Alternatives -->
+            <section data-transition="zoom">
+                <h2>ပိုကောင်းတဲ့ အခြားရွေးချယ်စရာ (Alternative)</h2>
+                <p class="fragment highlight-text">Recursive <code>setTimeout</code></p>
+            </section>
+
+            <!-- Slide 46: Recursive setTimeout -->
+            <section>
+                <h2>Recursive <code>setTimeout</code> ဆိုတာ ဘာလဲ?</h2>
+                <pre><code class="language-javascript" data-trim data-line-numbers>
+function repeatFunc() {
+    // အလုပ်လုပ်ရန်
+    console.log("Working...");
+
+    // ပြီးမှ နောက်တစ်ကြိမ် ပြန်ခေါ်ရန်
+    setTimeout(repeatFunc, 1000);
+}
+setTimeout(repeatFunc, 1000);
+                </code></pre>
+            </section>
+
+            <!-- Slide 47: Why is it better? -->
+            <section>
+                <h2>ဘာကြောင့် ပိုကောင်းတာလဲ?</h2>
+                <p>ပထမ အလုပ် <strong>လုံးဝ ပြီးဆုံးသွားမှသာ</strong> နောက်တစ်ကြိမ်အတွက် အချိန်စမှတ်တဲ့အတွက် အလုပ်တွေ ထပ်သွားခြင်း (Overlapping) လုံးဝ မဖြစ်နိုင်တော့ပါဘူး။</p>
+            </section>
+
+            <!-- Slide 48: requestAnimationFrame -->
+            <section>
+                <h2>Animation များအတွက် အထူး</h2>
+                <p>Web ပေါ်မှာ ချောမွေ့တဲ့ Animation တွေ (ဥပမာ ဂိမ်းတွေ) ရေးမယ်ဆိုရင် <code>setInterval</code> ထက် <strong class="highlight-text"><code>requestAnimationFrame</code></strong> ကို အသုံးပြုတာက Performance အကောင်းဆုံး ဖြစ်ပါတယ်။</p>
+            </section>
+
+            <!-- Slide 49: Summary -->
+            <section data-background-color="#16a085">
+                <h2 style="color: white;">အကျဉ်းချုပ် (Summary)</h2>
+                <ul>
+                    <li><code>setInterval</code> - သတ်မှတ်ထားသော အချိန်တိုင်း ထပ်တလဲလဲ အလုပ်လုပ်သည်။</li>
+                    <li><code>clearInterval</code> - အလုပ်လုပ်နေသည်ကို ရပ်တန့်စေသည်။</li>
+                    <li>အမြဲတမ်း <code>id</code> သိမ်းထားပြီး မလိုအပ်တော့ရင် Clear လုပ်ဖို့ မမေ့ပါနဲ့။</li>
+                    <li>တိကျမှု အလွန်လိုလျှင် သို့မဟုတ် အလုပ်တွေ ထပ်မှာစိုးလျှင် Recursive setTimeout ကို စဉ်းစားပါ။</li>
+                </ul>
+            </section>
+
+            <!-- Slide 50: Q&A and Thank You -->
+            <section data-transition="slide">
+                <i class="fas fa-check-circle icon-large" style="font-size: 3em;"></i>
+                <h1>ကျေးဇူးတင်ပါတယ်</h1>
+                <h3>မေးမြန်းလိုသည်များ ရှိပါသလား? (Q & A)</h3>
+                <p style="font-size: 0.6em; margin-top: 50px;">Slide အရေအတွက်: ၅၀ တိတိ ပြီးဆုံးပါပြီ။</p>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Reveal.js JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.3.1/plugin/highlight/highlight.js"></script>
+    
+    <script>
+        // Initialize Reveal.js
+        Reveal.initialize({
+            controls: true,           // Next/Prev buttons 
+            progress: true,           // Progress bar at the bottom
+            center: true,             // Center slide content vertically
+            hash: true,               // Keep slide numbers in URL
+            transition: 'slide',      // none/fade/slide/convex/concave/zoom
+            
+            // Auto-animate transition speed
+            autoAnimateDuration: 0.8,
+            
+            // Plugins
+            plugins: [ RevealHighlight ]
+        });
+
+        // Console log to confirm 50 slides
+        console.log("Total Slides Loaded: " + document.querySelectorAll('.reveal .slides > section').length);
+    </script>
+</body>
+</html>
